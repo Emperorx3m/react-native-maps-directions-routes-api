@@ -1,6 +1,6 @@
 {
   "name": "react-native-maps-directions-routes-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Routes Component for react react native using the NEW Routes API",
   "main": "index.js",
   "scripts": {

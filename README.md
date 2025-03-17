@@ -41,8 +41,13 @@ By adding this package to your application, you can easily configure the map ren
 
 To install the `MapViewDirectionsRoutesAPI` package, run the following command in your terminal:
 
+# Using NPM
    ```bash
    npm install react-native-maps-directions-routes-api
+   ```
+# Using YARN
+   ```bash
+   yarn add react-native-maps-directions-routes-api
    ```
 
 Ensure you have your Google Maps API key ready for usage.
