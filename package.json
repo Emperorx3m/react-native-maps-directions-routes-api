@@ -1,0 +1,51 @@
+{
+  "name": "react-native-maps-directions-routes-api",
+  "version": "1.0.0",
+  "description": "Routes Component for react react native using the NEW Routes API",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:watch": "esw --watch"
+  },
+  "author": {
+    "name": "Emperorx3m",
+    "email": "nil@nil.com",
+    "url": "https://github.com/Emperorx3m"
+  },
+  "repository": "https://github.com/Emperorx3m/react-native-maps-directions-routes-api.git",
+  "keywords": [
+    "react-native",
+    "react-native-component",
+    "react-native-maps",
+    "directions",
+    "google-maps",
+    "ios",
+    "android",
+    "routes",
+    "routes-api",
+    "directions-api",
+    "distance-matrix"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Emperorx3m/react-native-maps-directions-routes-api.git/issues"
+  },
+  "homepage": "https://github.com/Emperorx3m/react-native-maps-directions-routes-api.git",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-maps": ">=1.0.0",
+    "polyline": "^0.2.0"
+  },
+  "private": false,
+  "dependencies": {
+    "lodash.isequal": "^4.5.0",
+    "prop-types": "^15.6.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.2",
+    "eslint": "^4.11.0",
+    "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-react-native": "^3.2.0"
+  }
+}
