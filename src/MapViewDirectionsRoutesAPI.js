@@ -414,43 +414,31 @@ const MapViewDirectionsRoutesAPI = ({
 };
 
 MapViewDirectionsRoutesAPI.propTypes = {
-	origin: PropTypes.oneOfType([
-		PropTypes.string,
+	origin: PropTypes.shape({
+		latitude: PropTypes.number.isRequired,
+		longitude: PropTypes.number.isRequired,
+	  }),
+	  destination: PropTypes.shape({
+		latitude: PropTypes.number.isRequired,
+		longitude: PropTypes.number.isRequired,
+	  }),
+	  intermediates: PropTypes.arrayOf(
 		PropTypes.shape({
-			latitude: PropTypes.number.isRequired,
-			longitude: PropTypes.number.isRequired,
+		  latitude: PropTypes.number.isRequired,
+		  longitude: PropTypes.number.isRequired,
 		}),
-	]),
-	destination: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.shape({
-			latitude: PropTypes.number.isRequired,
-			longitude: PropTypes.number.isRequired,
-		}),
-	]),
-	intermediates: PropTypes.arrayOf(
-		PropTypes.oneOfType([
-			PropTypes.string,
-			PropTypes.shape({
-				latitude: PropTypes.number.isRequired,
-				longitude: PropTypes.number.isRequired,
-			}),
-		]),
-	).isRequired,
-	intermediates: (props, propName, componentName) => {
+	  ).isRequired,
+	  intermediates: (props, propName, componentName) => {
 		if (props[propName] && props[propName].length > 25) {
-			return new Error(`Invalid prop '${propName}' supplied to '${componentName}'. Maximum 25 elements allowed.`);
+		  return new Error(`Invalid prop '${propName}' supplied to '${componentName}'. Maximum 25 elements allowed.`);
 		}
-	},
-	extraMarkers: PropTypes.arrayOf(
-		PropTypes.oneOfType([
-			PropTypes.string,
-			PropTypes.shape({
-				latitude: PropTypes.number.isRequired,
-				longitude: PropTypes.number.isRequired,
-			}),
-		]),
-	),
+	  },
+	  extraMarkers: PropTypes.arrayOf(
+		PropTypes.shape({
+		  latitude: PropTypes.number.isRequired,
+		  longitude: PropTypes.number.isRequired,
+		}),
+	  ),
 	fitToCoordinates: PropTypes.shape({
 		edgePadding: PropTypes.shape({
 			top: PropTypes.number.isRequired,

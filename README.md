@@ -268,8 +268,6 @@ Below is a summary of the key configuration props available:
 
 * optimizeWaypoints (boolean, default: false): Optimize the order of intermediate waypoints.
 
-* splitWaypoints (boolean, default: false): If set, waypoints are handled separately.
-
 * computeAlternativeRoutes (boolean, default: false): Whether to compute alternative routes.
 
 * directionsServiceBaseUrl (string, default: https://routes.googleapis.com/directions/v2:computeRoutes): Base URL for the routes API.
@@ -357,13 +355,13 @@ The `MapViewDirectionsRoutesAPI` component accepts the following props:
 ### Required Props
 
 * **`apikey`**: A string representing the API key for the directions service.
-* **`origin`**: An object or string representing the starting point of the route. Can be either a string (e.g. "New York, NY") or an object with `latitude` and `longitude` properties (e.g. `{ latitude: 40.7128, longitude: -74.0060 }`).
-* **`destination`**: An object or string representing the ending point of the route. Can be either a string (e.g. "Los Angeles, CA") or an object with `latitude` and `longitude` properties (e.g. `{ latitude: 34.0522, longitude: -118.2437 }`).
-* **`intermediates`**: An array of objects or strings representing intermediate points along the route. Can be either strings (e.g. ["Chicago, IL", "Denver, CO"]) or objects with `latitude` and `longitude` properties (e.g. [{ latitude: 41.8781, longitude: -87.6298 }, { latitude: 39.7392, longitude: -104.9903 }]).
+* **`origin`**: An object representing the starting point of the route. An object with `latitude` and `longitude` properties (e.g. `{ latitude: 40.7128, longitude: -74.0060 }`).
+* **`destination`**: An object representing the ending point of the route. An object with `latitude` and `longitude` properties (e.g. `{ latitude: 34.0522, longitude: -118.2437 }`).
+* **`intermediates`**: An array of objects representing intermediate points along the route. Objects with `latitude` and `longitude` properties (e.g. [{ latitude: 41.8781, longitude: -87.6298 }, { latitude: 39.7392, longitude: -104.9903 }]).
 
 ### Optional Props
 
-* **`extraMarkers`**: An array of objects or strings representing additional markers to display along the route. Can be either strings (e.g. ["New York, NY", "Los Angeles, CA"]) or objects with `latitude` and `longitude` properties (e.g. [{ latitude: 40.7128, longitude: -74.0060 }, { latitude: 34.0522, longitude: -118.2437 }]).
+* **`extraMarkers`**: An array of objects  representing additional markers to display along the route. Objects with `latitude` and `longitude` properties (e.g. [{ latitude: 40.7128, longitude: -74.0060 }, { latitude: 34.0522, longitude: -118.2437 }]).
 
 ### Directions Service Props
 
@@ -378,9 +376,6 @@ The `MapViewDirectionsRoutesAPI` component accepts the following props:
 
 * **`selectedRouteColor`**: A string representing the color of the selected route.
 * **`notselectedRouteColor`**: A string representing the color of the non-selected routes.
-* **`precision`**: A string representing the precision of the route coordinates (e.g. "high", "low").
-* **`timePrecision`**: A string representing the precision of the route times (e.g. "minutes", "seconds").
-* **`channel`**: A string representing the channel for the directions service.
 * **`fieldMask`**: A string representing the field mask for the directions service.
 
 ### Advanced Props
