@@ -312,8 +312,9 @@ Below is a summary of the key configuration props available:
 * fitToCoordinates (object): Configuration for auto-fitting the displayed markers on the map view. See the Fit to Coordinates section.
 
 * extraMarkers (array): Additional markers to display on the map.
+```
 
-* Custom Markers
+# Custom Markers
 Customize markers by providing a customMarker object on each coordinate object. The keys include:
 -- # image: Local asset to use as the marker.
 -- # width & height: Dimensions for the marker.
@@ -322,15 +323,99 @@ Customize markers by providing a customMarker object on each coordinate object. 
 -- # anchorX & anchorY: Anchor points.
 -- # centerOffsetX & centerOffsetY: Offset adjustments.
 If customMarker is omitted, the default marker (red) is used.
+
+```js
+let sampleOrigin = {
+                "latitude": 16.5702678, //sample coordinates
+                "longitude": -3.264719, //sample coordinates
+                "latitudeDelta": 0.0005, //to control zoom levels
+                "longitudeDelta": 0.0005, //to control zoom levels
+                heading: 0, //marker direction/angle
+                customMarker: {
+                    image: require("./assets/destino.png"),
+                    width: 40, // image size
+                    height: 50, // image size
+                    pinColor: 'yellow', // not needed if image is set
+                    title: 'Destino',
+                    anchorX: 0.25, // play around with these figures to position your customMarker at the exact position
+                    anchorY: 0.25, // play around with these figures to position your customMarker at the exact position
+                    centerOffsetX: 0.5, // play around with these figures to position your customMarker at the exact position
+                    centerOffsetY: 0.2 // play around with these figures to position your customMarker at the exact position
+                }
 ```
-```bash
- customMarker: {
-           ...other props
-            anchorX: 0.5, // play around with these figures to position your customMarker at the exact position
-            anchorY: 0.25, // play around with these figures to position your customMarker at the exact position
-            centerOffsetX: 0, // play around with these figures to position your customMarker at the exact position
-            centerOffsetY: 0, // play around with these figures to position your customMarker at the exact position
+## Custom Text Markers
+![custom text marker](https://imgur.com/vyIojaX.png)
+
+```js
+let styleMarker = {
+        bubble: { backgroundColor: '#000' },
+        arrow: {
+            borderColor: '#000',
+            borderLeftWidth: 3,
+            borderRightWidth: 3,
         },
+
+    }
+
+ let sampleOrigin = {
+                "latitude": 16.5702678, //sample coordinates
+                "longitude": -3.264719, //sample coordinates
+                "latitudeDelta": 0.0005, //to control zoom levels
+                "longitudeDelta": 0.0005, //to control zoom levels
+                heading: 0, //marker direction/angle
+                customMarker: {
+                    customText: "13 mins",
+                    style: styleMarker // pass in your own styles to change marker properties
+                    //omit style to use default text marker green (TOOLTIP STYLE)
+                    anchorX: 0.25, 
+                    anchorY: 0.25,
+                    centerOffsetX: 0.5, 
+                    centerOffsetY: 0.2 
+                }
+```
+
+## style props available
+```js
+style.container = {}
+style.bubble = {}
+style.text = {}
+style.arrow = {}
+```
+
+```js
+const style = {
+		container: {
+			flexDirection: 'column',
+			alignSelf: 'flex-start',
+		},
+		bubble: {
+			flexDirection: 'row',
+			alignSelf: 'flex-start',
+			backgroundColor: '#38902f', 
+			padding: 4,
+			borderRadius: 60,
+			borderWidth: 0,
+		},
+		text: {
+			color: '#fff',
+			fontSize: 12,
+		},
+		arrow: {
+			width: 0,
+			height: 0,
+			borderLeftWidth: 10,
+			borderRightWidth: 10,
+			borderTopWidth: 10,
+			borderBottomWidth: 15,
+			borderStyle: 'solid',
+			borderLeftColor: 'transparent',
+			borderRightColor: 'transparent',
+			borderTopColor: '#38902f',
+			borderBottomColor: 'transparent',
+			alignSelf: 'center',
+			marginTop: -1,
+		},
+	};
 ```
 
 ### Fit to Coordinates

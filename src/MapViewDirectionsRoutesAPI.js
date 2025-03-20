@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import MapView, { Polyline, Marker } from "react-native-maps";
 import isEqual from 'lodash.isequal';
 import polyline from "polyline";
-import { View, Image } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
+
 // Constants
 
 const MapViewDirectionsRoutesAPI = ({
@@ -58,11 +59,24 @@ const MapViewDirectionsRoutesAPI = ({
 	const [extraMarkers_, setextraMarkers_] = useState(extraMarkers)
 	const prevPropsRef = useRef();
 	const mapRef = useRef(null);
+	const extractLatLng = (marker) => {
+		if (!marker) return null;
+		if ('latitude' in marker && 'longitude' in marker) {
+			return { latitude: marker.latitude, longitude: marker.longitude };
+		}
+		if (marker?.location?.latLng) {
+			return { latitude: marker.location.latLng.latitude, longitude: marker.location.latLng.longitude };
+		}
+		return null;
+	};
+
 	const allMarkers = [
-		initialOrigin,
-		...(Array.isArray(intermediates) ? intermediates.map((intermediate) => intermediate?.location?.latLng) : []),
-		initialDestination,
-	].filter(Boolean); // Remove any null or undefined values
+		extractLatLng(initialOrigin),
+		...(Array.isArray(intermediates) ? intermediates.map(extractLatLng) : []),
+		extractLatLng(initialDestination),
+		...(Array.isArray(extraMarkers) ? extraMarkers.map(extractLatLng) : []),
+	].filter(Boolean); // Removes null values
+
 
 	useEffect(() => {
 		onSelectRoute && onSelectRoute(selectedRouteIndex)
@@ -77,7 +91,16 @@ const MapViewDirectionsRoutesAPI = ({
 	// Automatically fit the map to show all markers
 	useEffect(() => {
 		if (mapRef.current && allMarkers.length > 1) {
-			mapRef.current.fitToCoordinates(allMarkers, fitToCoordinates);
+			setTimeout(async () => {
+				try {
+					const allMarkersFrames = await mapRef.current.getMarkersFrames();
+					console.log('All markers frames:', allMarkersFrames);
+				} catch (error) {
+					//console.log('Error getting marker frames:', error);
+				}
+	
+				mapRef.current.fitToCoordinates(allMarkers, fitToCoordinates);
+			}, 2000); // 2s delay
 		}
 	}, [allMarkers]);
 
@@ -217,8 +240,8 @@ const MapViewDirectionsRoutesAPI = ({
 
 							return {
 								...route,
-								key: `route-${index}`, 
-								coordinates: decodedCoordinates, 
+								key: `route-${index}`,
+								coordinates: decodedCoordinates,
 							};
 						});
 
@@ -286,6 +309,53 @@ const MapViewDirectionsRoutesAPI = ({
 		return null;
 	}
 
+	const AnimatedTextMarker = ({ text, style = {} }) => {
+		return (
+			<View style={[styles.container, style.container]}>
+				<View style={[styles.bubble, style.bubble]}>
+					<Text style={[styles.text, style.text]}>{text}</Text>
+				</View>
+				<View style={[styles.arrowBorder, style.arrowBorder]} />
+				<View style={[styles.arrow, style.arrow]} />
+			</View>
+		);
+	};
+
+	const styles = StyleSheet.create({
+		container: {
+			flexDirection: 'column',
+			alignSelf: 'flex-start',
+		},
+		bubble: {
+			flexDirection: 'row',
+			alignSelf: 'flex-start',
+			backgroundColor: '#38902f', // Static Red Color
+			padding: 4,
+			borderRadius: 60,
+			borderWidth: 0,
+		},
+		text: {
+			color: '#fff',
+			fontSize: 12,
+		},
+		arrow: {
+			width: 0,
+			height: 0,
+			borderLeftWidth: 10,
+			borderRightWidth: 10,
+			borderTopWidth: 10,
+			borderBottomWidth: 15,
+			borderStyle: 'solid',
+			borderLeftColor: 'transparent',
+			borderRightColor: 'transparent',
+			borderTopColor: '#38902f',
+			borderBottomColor: 'transparent',
+			alignSelf: 'center',
+			marginTop: -1,
+		},
+	});
+
+
 	return (
 		<View style={{ flex: 1 }}>
 			<MapView
@@ -307,13 +377,15 @@ const MapViewDirectionsRoutesAPI = ({
 					rotation={initialOrigin?.heading ?? 0}>
 					{initialOrigin?.customMarker?.image ? (
 						<Image
-							source={initialOrigin?.customMarker?.image}
+							source={initialOrigin.customMarker.image}
 							style={{
 								width: initialOrigin?.customMarker?.width || 30,
 								height: initialOrigin?.customMarker?.height || 30,
 							}}
 							resizeMode="contain"
 						/>
+					) : initialOrigin?.customMarker?.customText ? (
+						<AnimatedTextMarker text={initialOrigin.customMarker.customText} style={initialOrigin?.customMarker?.style} />
 					) : null}
 				</Marker>
 
@@ -327,13 +399,15 @@ const MapViewDirectionsRoutesAPI = ({
 					rotation={initialDestination?.heading ?? 0}>
 					{initialDestination?.customMarker?.image ? (
 						<Image
-							source={initialDestination?.customMarker?.image}
+							source={initialDestination.customMarker.image}
 							style={{
 								width: initialDestination?.customMarker?.width || 30,
 								height: initialDestination?.customMarker?.height || 30,
 							}}
 							resizeMode="contain"
 						/>
+					) : initialDestination?.customMarker?.customText ? (
+						<AnimatedTextMarker text={initialDestination.customMarker.customText} style={initialDestination?.customMarker?.style} />
 					) : null}
 				</Marker>
 
@@ -348,15 +422,17 @@ const MapViewDirectionsRoutesAPI = ({
 						title={intermediate?.location?.latLng?.customMarker?.title ?? 'origin'}
 						rotation={intermediate?.location?.latLng?.heading ?? 0}>
 						{intermediate?.location?.latLng?.customMarker?.image ? (
-							<Image
-								source={intermediate?.location?.latLng?.customMarker?.image}
-								style={{
-									width: intermediate?.location?.latLng?.customMarker?.width || 30,
-									height: intermediate?.location?.latLng?.customMarker?.height || 30,
-								}}
-								resizeMode="contain"
-							/>
-						) : null}
+						<Image
+							source={intermediate.location?.latLng?.customMarker.image}
+							style={{
+								width: intermediate?.location?.latLng?.customMarker?.width || 30,
+								height: intermediate?.location?.latLng?.customMarker?.height || 30,
+							}}
+							resizeMode="contain"
+						/>
+					) : intermediate?.location?.latLng?.customMarker?.customText ? (
+						<AnimatedTextMarker text={intermediate.location?.latLng?.customMarker.customText} style={intermediate?.location?.latLng?.customMarker?.style} />
+					) : null}
 					</Marker>
 				))}
 
@@ -373,13 +449,15 @@ const MapViewDirectionsRoutesAPI = ({
 							rotation={extraMarker?.heading ?? 0}>
 							{extraMarker?.customMarker?.image ? (
 								<Image
-									source={extraMarker?.customMarker?.image}
+									source={extraMarker.customMarker.image}
 									style={{
 										width: extraMarker?.customMarker?.width || 30,
 										height: extraMarker?.customMarker?.height || 30,
 									}}
 									resizeMode="contain"
 								/>
+							) : extraMarker?.customMarker?.customText ? (
+								<AnimatedTextMarker text={extraMarker.customMarker.customText} style={extraMarker?.customMarker?.style} />
 							) : null}
 						</Marker>
 
@@ -417,28 +495,28 @@ MapViewDirectionsRoutesAPI.propTypes = {
 	origin: PropTypes.shape({
 		latitude: PropTypes.number.isRequired,
 		longitude: PropTypes.number.isRequired,
-	  }),
-	  destination: PropTypes.shape({
+	}),
+	destination: PropTypes.shape({
 		latitude: PropTypes.number.isRequired,
 		longitude: PropTypes.number.isRequired,
-	  }),
-	  intermediates: PropTypes.arrayOf(
+	}),
+	intermediates: PropTypes.arrayOf(
 		PropTypes.shape({
-		  latitude: PropTypes.number.isRequired,
-		  longitude: PropTypes.number.isRequired,
+			latitude: PropTypes.number.isRequired,
+			longitude: PropTypes.number.isRequired,
 		}),
-	  ).isRequired,
-	  intermediates: (props, propName, componentName) => {
+	).isRequired,
+	intermediates: (props, propName, componentName) => {
 		if (props[propName] && props[propName].length > 25) {
-		  return new Error(`Invalid prop '${propName}' supplied to '${componentName}'. Maximum 25 elements allowed.`);
+			return new Error(`Invalid prop '${propName}' supplied to '${componentName}'. Maximum 25 elements allowed.`);
 		}
-	  },
-	  extraMarkers: PropTypes.arrayOf(
+	},
+	extraMarkers: PropTypes.arrayOf(
 		PropTypes.shape({
-		  latitude: PropTypes.number.isRequired,
-		  longitude: PropTypes.number.isRequired,
+			latitude: PropTypes.number.isRequired,
+			longitude: PropTypes.number.isRequired,
 		}),
-	  ),
+	),
 	fitToCoordinates: PropTypes.shape({
 		edgePadding: PropTypes.shape({
 			top: PropTypes.number.isRequired,
